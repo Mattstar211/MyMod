@@ -21,8 +21,9 @@ public class WandItem extends Item {
     {
         if (!level.isClientSide) {
             Vec3 direction = player.getLookAngle().normalize();
+            Vec3 spawnPos = player.getEyePosition().add(direction.scale(0.6));
             MagicProjectile ball = new MagicProjectile(MAGIC_PROJECTILE, level);
-            ball.setPos(player.getX(), player.getEyePosition().y, player.getZ());
+            ball.setPos(spawnPos.x, spawnPos.y, spawnPos.z);
             ball.shoot(direction.x, direction.y, direction.z, 1.0f, 0.0f);
             level.addFreshEntity(ball);
         }
