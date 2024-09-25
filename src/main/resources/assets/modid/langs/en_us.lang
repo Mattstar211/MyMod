@@ -1,4 +1,6 @@
 
 item.modid.wand=Wand
 
+block.modid.catcher_block=Catcher Block
+
 creative_tab.modid.root=Epic wands
