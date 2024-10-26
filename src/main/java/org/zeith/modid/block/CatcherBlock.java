@@ -41,11 +41,7 @@ public class CatcherBlock extends Block implements ICreativeTabBlock, EntityBloc
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type)
     {
-        return (lvl, pos, blockState, t) -> {
-            if (t instanceof CatcherTile catcherTile) {
-                catcherTile.tick(lvl, pos, blockState, t);
-            }
-        };
+        return BlockAPI.ticker(level);
     }
 
 }

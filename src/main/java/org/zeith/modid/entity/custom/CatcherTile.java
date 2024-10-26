@@ -35,22 +35,20 @@ public class CatcherTile extends TileSyncableTickable {
     }
 
     @Override
-    public void tick(Level level, BlockPos pos, BlockState state, BlockEntity be)
-    {
-        super.tick(level, pos, state, be);
-
+    public void update() {
+        super.update();
         if (!level.isClientSide) {
             if (lightningCooldown > 0) {
                 lightningCooldown--;
             } else {
                 int radius = 8;
                 List<LightningBolt> lightningBolts = level.getEntitiesOfClass(LightningBolt.class, new net.minecraft.world.phys.AABB(
-                        pos.offset(-radius, -radius, -radius),
-                        pos.offset(radius, radius, radius))
+                        getBlockPos().offset(-radius, -radius, -radius),
+                        getBlockPos().offset(radius, radius, radius))
                 );
                 if (!lightningBolts.isEmpty()) {
                     for (LightningBolt bolt : lightningBolts) {
-                        double distance = Math.sqrt(bolt.blockPosition().distSqr(pos));
+                        double distance = Math.sqrt(bolt.blockPosition().distSqr(getBlockPos()));
                         if (distance <= radius) {
                             int energyToAdd = (int) ((1.0 - (distance / radius)) * 16000);
                             addEnergyToBlock(level, energyToAdd);
@@ -59,7 +57,7 @@ public class CatcherTile extends TileSyncableTickable {
                     }
                 }
             }
-            if (energyStorage.getEnergyStored() > 0) distributeEnergyToNeighbors(level, pos);
+            if (energyStorage.getEnergyStored() > 0) distributeEnergyToNeighbors(level, getBlockPos());
         }
     }
 
