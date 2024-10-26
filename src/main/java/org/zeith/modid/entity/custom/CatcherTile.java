@@ -24,7 +24,6 @@ import java.util.List;
 
 
 public class CatcherTile extends TileSyncableTickable {
-    private int lightningCooldown = 0;
     private final EnergyStorage energyStorage = new EnergyStorage(16000);
     private static final Capability<IEnergyStorage> ENERGY_CAPABILITY = CapabilityManager.get(new CapabilityToken<>() {});
     private final LazyOptional<IEnergyStorage> energy = LazyOptional.of(() -> energyStorage);
@@ -38,21 +37,19 @@ public class CatcherTile extends TileSyncableTickable {
     public void update() {
         super.update();
         if (!level.isClientSide) {
-            if (lightningCooldown > 0) {
-                lightningCooldown--;
-            } else {
-                int radius = 8;
-                List<LightningBolt> lightningBolts = level.getEntitiesOfClass(LightningBolt.class, new net.minecraft.world.phys.AABB(
-                        getBlockPos().offset(-radius, -radius, -radius),
-                        getBlockPos().offset(radius, radius, radius))
-                );
-                if (!lightningBolts.isEmpty()) {
-                    for (LightningBolt bolt : lightningBolts) {
+            int radius = 8;
+            List<LightningBolt> lightningBolts = level.getEntitiesOfClass(LightningBolt.class, new net.minecraft.world.phys.AABB(
+                    getBlockPos().offset(-radius, -radius, -radius),
+                    getBlockPos().offset(radius, radius, radius))
+            );
+            if (!lightningBolts.isEmpty()) {
+                for (LightningBolt bolt : lightningBolts) {
+                    if (!bolt.getTags().contains("processed")) {
                         double distance = Math.sqrt(bolt.blockPosition().distSqr(getBlockPos()));
                         if (distance <= radius) {
                             int energyToAdd = (int) ((1.0 - (distance / radius)) * 16000);
                             addEnergyToBlock(level, energyToAdd);
-                            lightningCooldown = 20;
+                            bolt.addTag("processed");
                         }
                     }
                 }
